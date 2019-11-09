@@ -14,7 +14,7 @@ const TRANSLINK_URL = 'http://api.translink.ca/rttiapi/v1/'
 
 // API routes
 app.get('/buses/location', async (req, res) => {
-  const FILTERS = 'buses'
+  const FILTERS = 'buses/61060'
   const apiURL = `${TRANSLINK_URL}${FILTERS}${TRANSLINK_TOKEN}`
   try {
     const response = await fetch(apiURL, { headers: { 'Accept': 'application/json' }})

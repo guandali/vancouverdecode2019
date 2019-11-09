@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import Mapbox from './Mapbox.js'
-import logo from './assets/spare-logo.jpg';
 
 
 class App extends Component {
