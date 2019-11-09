@@ -1,0 +1,45 @@
+/* Overrides */
+.mapboxgl-canvas {
+  position: unset !important;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  display: none;
+}
+
+.location-marker {
+  display: block;
+  border-radius: 100%;
+  height: 8px;
+  width: 8px;
+  margin: 0;
+  background: radial-gradient(circle at 0px 0px, blue, white);
+}
+
+.marker-small {
+  height: 8px;
+  width: 8px;
+}
+
+.verylate{
+  background: radial-gradient(circle at 0px 0px, red, black) !important; 
+}
+.late{
+  background: radial-gradient(circle at 0px 0px, red, white) !important; 
+}
+.punctual{
+  background: radial-gradient(circle at 0px 0px, green, white) !important; 
+}
+.early{
+  background: radial-gradient(circle at 0px 0px, yellow, white) !important; 
+}
+
+.marker-medium {
+  height: 10px;
+  width: 10px;
+}
+
+.marker-large {
+  height: 12px;
+  width: 12px;
+}
