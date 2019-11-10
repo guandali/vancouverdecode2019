@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import ReactMapGL, {Marker} from 'react-map-gl';
+import ReactMapGL, {Marker, Popup} from 'react-map-gl';
 import './Mapbox.css';
 import 'mapbox-gl/dist/mapbox-gl.css'
+import Pin from './Pin';
+import StopInfo from './StopInfo.js'
 // import { runInThisContext } from 'vm';
 
 // note: mapbox token should be stored locally in separate file
@@ -258,6 +260,7 @@ class Mapbox extends Component {
           'Longitude': -122.914885
         },
       ],
+      popupInfo: null,
       marker_size: 'small',
     };
   }
@@ -316,38 +319,42 @@ class Mapbox extends Component {
       console.log(e)
     }
   }
-  createBusStopMarkers = () => {
-    let markers = []
-    for (let i = 0; i < this.state.bus_stops.length; i++) {
-      // if vehicle is within viewport bounds, display vehicle marker
-      const stop = this.state.bus_stops[i]
-      if(
-        stop.Latitude >= this.state.viewport_bounds.south &&
-        stop.Latitude  <= this.state.viewport_bounds.north &&
-        stop.Longitude >= this.state.viewport_bounds.west &&
-        stop.Longitude <= this.state.viewport_bounds.east
-        ) {
-          // let classColour = "punctual"
-          // if (stop['TripId'] % 2 === 0 && stop['Direction'] === "WEST"){
-          //   classColour = "verylate"
-          // } else if(stop['TripId'] %2 === 0 && stop['Direction'] === "EAST" && stop['RouteNo'] % 2 === 1){
-          //   classColour = "early"
-          // } else if(stop['Destination'] === "INDIAN RIVER" || (stop['Longitude'] < -120 && stop['TripId']%2 === 0)){
-          //   classColour = "punctual"
-          // } else {
-          //   classColour = "late"
-          // }
-          markers.push(
-          <Marker key={'stop-'+i} latitude={stop.Latitude} longitude={stop.Longitude} offsetLeft={-4} offsetTop={-4}>
-            <div className={'stop-marker ' + this.state.marker_size }></div>
-          </Marker>
-          )
-      }
-    }
-    return markers
-  }
+
+  // createBusStopMarkers = () => {
+  //   let markers = []
+  //   for (let i = 0; i < this.state.bus_stops.length; i++) {
+  //     // if vehicle is within viewport bounds, display vehicle marker
+  //     const stop = this.state.bus_stops[i]
+  //     if(
+  //       stop.Latitude >= this.state.viewport_bounds.south &&
+  //       stop.Latitude  <= this.state.viewport_bounds.north &&
+  //       stop.Longitude >= this.state.viewport_bounds.west &&
+  //       stop.Longitude <= this.state.viewport_bounds.east
+  //       ) {
+  //         // let classColour = "punctual"
+  //         // if (stop['TripId'] % 2 === 0 && stop['Direction'] === "WEST"){
+  //         //   classColour = "verylate"
+  //         // } else if(stop['TripId'] %2 === 0 && stop['Direction'] === "EAST" && stop['RouteNo'] % 2 === 1){
+  //         //   classColour = "early"
+  //         // } else if(stop['Destination'] === "INDIAN RIVER" || (stop['Longitude'] < -120 && stop['TripId']%2 === 0)){
+  //         //   classColour = "punctual"
+  //         // } else {
+  //         //   classColour = "late"
+  //         // }
+  //         markers.push(
+  //         <Marker key={'stop-'+i} latitude={stop.Latitude} longitude={stop.Longitude} 
+  //           onClick={() => this.setState({popupInfo: stop})}
+  //           offsetLeft={-4} offsetTop={-4}>
+  //           <div className={'stop-marker ' + this.state.marker_size }></div>
+  //         </Marker>
+  //         )
+  //     }
+  //   }
+  //   return markers
+  // }
 
   // create markers/dots on UI to display live location of each vehicle
+ 
   createMarkers = () => {
     let markers = []
     if(this.state.active_vehicles){
@@ -371,7 +378,8 @@ class Mapbox extends Component {
               classColour = "late"
             }
             markers.push(
-            <Marker key={i} latitude={vehicle['Latitude']} longitude={vehicle['Longitude']} offsetLeft={-4} offsetTop={-4}>
+            <Marker key={i} latitude={vehicle['Latitude']} longitude={vehicle['Longitude']} 
+              offsetLeft={-4} offsetTop={-4}>
               <div className={'location-marker ' + this.state.marker_size + " " + classColour}></div>
             </Marker>
             )
@@ -398,6 +406,9 @@ class Mapbox extends Component {
               markers.push(
               <Marker key={'stop-'+i} latitude={stop.Latitude} longitude={stop.Longitude} offsetLeft={-4} offsetTop={-4}>
                 <div className={'stop-marker ' + this.state.marker_size + '-area ' + classColour}></div>
+                <Pin onClick={() => {
+                    console.log('hi ginnie')
+                    this.setState({popupInfo: stop})}}/>
               </Marker>
               )
           }
@@ -406,6 +417,26 @@ class Mapbox extends Component {
     
       return markers
     }
+  }
+
+  _renderPopup() {
+    
+    const {popupInfo} = this.state;
+
+    return (
+      popupInfo && (
+        <Popup
+          tipSize={5}
+          anchor="top"
+          longitude={popupInfo.longitude}
+          latitude={popupInfo.latitude}
+          closeOnClick={false}
+          onClose={() => this.setState({popupInfo: null})}
+        >
+          <StopInfo info={popupInfo} />
+        </Popup>
+      )
+    );
   }
 
   render() {
@@ -420,7 +451,9 @@ class Mapbox extends Component {
         onViewportChange={this._onViewportChange}>
 
         <div>
+          {/* {this.state.bus_stops.map(this._renderPopup)} */}
           {this.createMarkers()}
+          {this._renderPopup()}
         </div>
 
       </ReactMapGL>
