@@ -433,7 +433,7 @@ class Mapbox extends Component {
     this.updateViewportBounds();
     // initial fetch
     this.fetchLocation();
-    //test fetch status
+    // test fetch status
     // this.fetchStops();
     // fetch at defined interval
     this.interval = setInterval(() => this.fetchLocation(), FETCH_INTERVAL);
