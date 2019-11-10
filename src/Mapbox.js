@@ -8,7 +8,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWljaGFlbC0zOCIsImEiOiJjam8wazR6amIwMTZrM2twbzk3dmd1ZGp2In0.7fZdbYKU1gxvl5KFV4-Eiw'
 
 // define how often data should be fetched
-const FETCH_INTERVAL = 800
+const FETCH_INTERVAL = 1000
 
 // define map reference to get viewport bounds
 let myMap = null
@@ -18,11 +18,11 @@ class Mapbox extends Component {
     super(props)
     this.state = {
       viewport: {
-        width: 900,
-        height: 500,
+        width: 550,
+        height: 300,
         latitude: 49.2463,
         longitude: -123.1162,
-        zoom: 11
+        zoom: 10
       },
       viewport_bounds: {
         north: 0,
@@ -388,10 +388,11 @@ class Mapbox extends Component {
             stop.Longitude >= this.state.viewport_bounds.west &&
             stop.Longitude <= this.state.viewport_bounds.east
             ) {
-              let classColour = "normal"
-              if (stop.StopId % 2 === 0 && this.state.active_vehicles[i]['Direction'] === "WEST"){
-                classColour = "busy"
-              } else if(stop.StopId %2 === 0 && this.state.active_vehicles[i]['Direction'] === "EAST" && this.state.active_vehicles[i]['RouteNo'] % 2 === 1){
+              let classColour = "busy"
+              let rand = Math.floor(Math.random() * Math.floor(this.state.active_vehicles.length))
+              if (stop.StopId % 2 === 0 && this.state.active_vehicles[rand]['Direction'] === "WEST"){
+                classColour = "normal"
+              } else if(stop.StopId % 2 === 0 && this.state.active_vehicles[rand]['TripId'] %2 === 0 && this.state.active_vehicles[rand]['RouteNo'] % 2 === 1 && this.state.active_vehicles[rand]['Direction'] === "EAST"){
                 classColour = "veryBusy"
               } 
               markers.push(
@@ -413,7 +414,7 @@ class Mapbox extends Component {
         // mapbox API access token
         mapboxApiAccessToken={MAPBOX_TOKEN}
         // mapbox styling/theme
-        mapStyle='mapbox://styles/mapbox/light-v9'
+        mapStyle='mapbox://styles/mapbox/dark-v9'
         ref={ map => this.mapRef = map }
         {...this.state.viewport}
         onViewportChange={this._onViewportChange}>

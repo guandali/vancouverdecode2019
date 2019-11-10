@@ -38,15 +38,16 @@
 .veryBusy{
   background: rgb(248, 10, 6);
   border-style: dotted;
-  opacity: 0.4;
+  opacity: 0.6;
   border-color: rgb(0, 0, 0);
 }
 
 .normal{
-  background: rgb(208, 255, 0);
+  /* background: rgb(208, 255, 0);
   border-style: dotted;
   opacity: 0.4;
-  border-color: green;
+  border-color: green; */
+  display:none;
 }
 
 .verylate{
