@@ -405,10 +405,13 @@ class Mapbox extends Component {
               } 
               markers.push(
               <Marker key={'stop-'+i} latitude={stop.Latitude} longitude={stop.Longitude} offsetLeft={-4} offsetTop={-4}>
-                <div className={'stop-marker ' + this.state.marker_size + '-area ' + classColour}></div>
-                <Pin onClick={() => {
+                <div className={'stop-marker ' + this.state.marker_size + '-area ' + classColour} onClick={() => {
+                  console.log('hi ginnie')
+                  window.open("https://app.powerbi.com/groups/me/dashboards/9c815644-d57e-49f6-8746-98febaa03372?ctid=4c1b219d-8712-4495-a92c-31e6db6d1883", "_blank")
+                }}></div>
+                {/* <Pin onClick={() => {
                     console.log('hi ginnie')
-                    this.setState({popupInfo: stop})}}/>
+                    this.setState({popupInfo: stop})}}/> */}
               </Marker>
               )
           }
