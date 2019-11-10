@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactMapGL, {Marker} from 'react-map-gl';
 import './Mapbox.css';
 import 'mapbox-gl/dist/mapbox-gl.css'
+// import { runInThisContext } from 'vm';
 
 // note: mapbox token should be stored locally in separate file
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWljaGFlbC0zOCIsImEiOiJjam8wazR6amIwMTZrM2twbzk3dmd1ZGp2In0.7fZdbYKU1gxvl5KFV4-Eiw'
@@ -74,23 +75,53 @@ class Mapbox extends Component {
     }
   }
 
+  // fetch location data from endpoint
+  fetchStops =  async () => {
+    try {
+      let statusURL = "/stops"
+      const response = await fetch(statusURL)
+      console.log(response)
+      if(response.ok){
+        console.log(response)
+        const data = await response.json()
+        console.log(data)
+      }
+      
+      console.log(response)
+    }
+    catch (e){
+      console.log(e)
+    }
+  }
+
   // create markers/dots on UI to display live location of each vehicle
   createMarkers = () => {
     let markers = [];
     if(this.state.active_vehicles){
       for (let i = 0; i < this.state.active_vehicles.length; i++) {
         // if vehicle is within viewport bounds, display vehicle marker
+        const vehicle = this.state.active_vehicles[i]
         if(
-          this.state.active_vehicles[i]['Latitude'] >= this.state.viewport_bounds.south &&
-          this.state.active_vehicles[i]['Latitude'] <= this.state.viewport_bounds.north &&
-          this.state.active_vehicles[i]['Longitude'] >= this.state.viewport_bounds.west &&
-          this.state.active_vehicles[i]['Longitude'] <= this.state.viewport_bounds.east
+          vehicle['Latitude'] >= this.state.viewport_bounds.south &&
+          vehicle['Latitude'] <= this.state.viewport_bounds.north &&
+          vehicle['Longitude'] >= this.state.viewport_bounds.west &&
+          vehicle['Longitude'] <= this.state.viewport_bounds.east
           ) {
-          markers.push(
-          <Marker key={i} latitude={this.state.active_vehicles[i]['Latitude']} longitude={this.state.active_vehicles[i]['Longitude']} offsetLeft={-4} offsetTop={-4}>
-            <div className={'location-marker ' + this.state.marker_size}></div>
-          </Marker>
-          )
+            let classColour = "punctual"
+            if (vehicle['TripId'] % 2 === 0 && vehicle['Direction'] === "WEST"){
+              classColour = "verylate"
+            } else if(vehicle['TripId'] %2 === 0 && vehicle['Direction'] === "EAST" && vehicle['RouteNo'] % 2 === 1){
+              classColour = "early"
+            } else if(vehicle['Destination'] === "INDIAN RIVER" || (vehicle['Longitude'] < -120 && vehicle['TripId']%2 === 0)){
+              classColour = "punctual"
+            } else {
+              classColour = "late"
+            }
+            markers.push(
+            <Marker key={i} latitude={vehicle['Latitude']} longitude={vehicle['Longitude']} offsetLeft={-4} offsetTop={-4}>
+              <div className={'location-marker ' + this.state.marker_size + " " + classColour}></div>
+            </Marker>
+            )
         }
       }
       return markers
@@ -122,6 +153,8 @@ class Mapbox extends Component {
     this.updateViewportBounds();
     // initial fetch
     this.fetchLocation();
+    //test fetch status
+    this.fetchStops();
     // fetch at defined interval
     this.interval = setInterval(() => this.fetchLocation(), FETCH_INTERVAL);
   }
