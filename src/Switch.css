@@ -1,0 +1,9 @@
+label{
+    justify-content: left;
+    font-size: 15px;
+    background-color: white;
+
+    .switch {
+        font: 15px;
+    }
+}

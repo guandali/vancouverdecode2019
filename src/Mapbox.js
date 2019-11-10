@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactMapGL, {Marker} from 'react-map-gl';
 import './Mapbox.css';
 import 'mapbox-gl/dist/mapbox-gl.css'
+import ThemeSwitch from "./Switch.js"
 // import { runInThisContext } from 'vm';
 
 // note: mapbox token should be stored locally in separate file
@@ -410,7 +411,9 @@ class Mapbox extends Component {
 
   render() {
     return (
+      
       <ReactMapGL
+
         // mapbox API access token
         mapboxApiAccessToken={MAPBOX_TOKEN}
         // mapbox styling/theme
@@ -418,8 +421,11 @@ class Mapbox extends Component {
         ref={ map => this.mapRef = map }
         {...this.state.viewport}
         onViewportChange={this._onViewportChange}>
-
+        
+     
         <div>
+          <ThemeSwitch></ThemeSwitch>
+          
           {this.createMarkers()}
         </div>
 
